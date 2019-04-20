@@ -11,20 +11,22 @@
     // var previousUnderscore = root._;
 
     // 缓存变量, 便于压缩代码 到 min.js
-    var ArrayProto = Array.prototype, ObjProto = Object.prototype, FunProto = Function.prototype;
+    var ArrayProto = Array.prototype,
+        ObjProto = Object.prototype,
+        FunProto = Function.prototype;
 
     var
-        push            = ArrayProto.push,
-        slice           = ArrayProto.slice,
-        toString        = ObjProto.toString,
-        hasOwnProperty  = ObjProto.hasOwnProperty;
+        push = ArrayProto.push,
+        slice = ArrayProto.slice,
+        toString = ObjProto.toString,
+        hasOwnProperty = ObjProto.hasOwnProperty;
 
     // ES5 原生方法 , 如果浏览器支持，则优先用原生
     var
-        nativeIsArray   = Array.isArray,
-        nativeKeys      = Object.keys,
-        nativeBind      = FunProto.bind,
-        nativeCreate    = Object.create;
+        nativeIsArray = Array.isArray,
+        nativeKeys = Object.keys,
+        nativeBind = FunProto.bind,
+        nativeCreate = Object.create;
 
     var _ = function(obj) {
         if (obj instanceof _) return obj;
@@ -81,17 +83,18 @@
     }
 
     //内部函数
-    var createAssigner = function(keysFunc, undefinedOnly){
-        return function(obj){
+    //分配函数, 返回一个函数，这个函数将参数arguments 中的键值赋给新的obj
+    var createAssigner = function(keysFunc, undefinedOnly) {
+        return function(obj) {
             var length = arguments.length;
-            if(length < 2 || obj == null) return obj;
-            for(var index = 1; index < length; index++){
+            if (length < 2 || obj == null) return obj;
+            for (var index = 1; index < length; index++) {
                 var source = arguments[index],
                     keys = keysFunc(source),
                     l = keys.length;
-                for(var i = 0; i < l; i++){
+                for (var i = 0; i < l; i++) {
                     var key = keys[i];
-                    if(!undefinedOnly || obj[key] === void 0) obj[key] = source[key];
+                    if (!undefinedOnly || obj[key] === void 0) obj[key] = source[key];
                 }
             }
             return obj;
@@ -118,35 +121,35 @@
     // -------------------------------------数组
 
     //返回数据中的第一个元素; n 返回从第一个开始前n 个元素; guard 允许使用 _.map
-    _.first = _.head = _.take = function(array, n, guard){
-        if(array == null) return void 0;// array 为空, 返回 undefined
-        if(n == null || guard) return array[0];// 未传 n, 返回第一个元素
-        return _.initial(array, array.length - n);// 传n , 返回前n 个元素组成的数组
+    _.first = _.head = _.take = function(array, n, guard) {
+        if (array == null) return void 0; // array 为空, 返回 undefined
+        if (n == null || guard) return array[0]; // 未传 n, 返回第一个元素
+        return _.initial(array, array.length - n); // 传n , 返回前n 个元素组成的数组
     }
     //返回除最后一个元素的其它所有元素; 尤其在arguments 对象特别有用;
     //n 排除掉数组后面的 n 个元素, 用slice 切片切除最后 n 个元素
-    _.initial = function(array, n, guard){
+    _.initial = function(array, n, guard) {
         //用 Math.max(0, x) 防止n 值超过数据长度以后 x 变为负数
         //若为 x 负数, 则取 0 > x; slice.call(array, 0 ,0) 返回空数组
-        return slice.call(array, 0, Math.max(0, array.length - (n==null || guard ?1:n)));
+        return slice.call(array, 0, Math.max(0, array.length - (n == null || guard ? 1 : n)));
     }
 
-    _.last = function(array, n, guard){
-        if(array == null) return void 0;
-        if(n == null || guard) return array[array.length - 1];
+    _.last = function(array, n, guard) {
+        if (array == null) return void 0;
+        if (n == null || guard) return array[array.length - 1];
         return _.rest(array, Math.max(0, array.length - n));
     }
     //返回数组中除了第一个元素外的其它所有元素; n 返回从n 开始的剩余元素
-    _.rest = function(array, n, guard){
-        return slice.call(array, n == null || guard ? 1:n);
+    _.rest = function(array, n, guard) {
+        return slice.call(array, n == null || guard ? 1 : n);
     }
 
-    _.object = function(list, values){
+    _.object = function(list, values) {
         var result = {};
-        for(var i = 0, length = getLength(list); i < length; i++){
-            if(values){
+        for (var i = 0, length = getLength(list); i < length; i++) {
+            if (values) {
                 result[list[i]] = values[i];
-            }else{
+            } else {
                 result[list[i][0]] = list[i][1];
             }
         }
@@ -154,13 +157,13 @@
     }
 
     //返回  创建 findIndex/findLastIndex 的函数  dir  正数为正序, 负数为逆序
-    function createPredicateIndexFinder(dir){
-        return function(array, predicate, context){
-            predicate =cb(predicate, context);
+    function createPredicateIndexFinder(dir) {
+        return function(array, predicate, context) {
+            predicate = cb(predicate, context);
             var length = getLength(array);
-            var index = dir > 0 ? 0:length - 1;
-            for(; index >= 0 && index < length; index += dir){
-                if(predicate(array[index], index, array)) return index;
+            var index = dir > 0 ? 0 : length - 1;
+            for (; index >= 0 && index < length; index += dir) {
+                if (predicate(array[index], index, array)) return index;
             }
             return -1;
         }
@@ -169,21 +172,41 @@
     //查找第一个符合断言的值的索引
     _.findIndex = createPredicateIndexFinder(1);
     _.findLastIndex = createPredicateIndexFinder(-1);
+
+    // _.sortedIndex([10, 20, 30, 40, 50], 35);
+    //  输出 3
+    //使用二分查找确定 35 在list中插入后的index
+    //iteratee 如果传入的话，将作为排序依据
+    _.sortedIndex = function(array, obj, iteratee, context) {
+        iteratee = cb(iteratee, context, 1);
+        var value = iteratee(obj);
+        var low = 0,
+            high = getLength(array);
+        while (low < high) {
+            var mid = Math.floor((low + high) / 2);
+            if (iteratee(array[mid]) < value)
+                low = mid + 1;
+            else high = mid;
+
+        }
+        return low;
+    }
     // ------------------------------------ 函数
 
     // -------------------------------------对象
 
-    _.has = function(obj, key){
+    _.has = function(obj, key) {
         return obj !== null && hasOwnProperty.call(obj, key);
     }
 
 
 
-    _.keys = function(obj){
-        if(!_.isObject(obj)) return [];
-        if(nativeKeys) return nativeKeys(obj);
+    _.keys = function(obj) {
+        if (!_.isObject(obj)) return [];
+        if (nativeKeys) return nativeKeys(obj);
         var keys = [];
-        for(var key in obj) if(_.has(obj, key)) keys.push(key);
+        for (var key in obj)
+            if (_.has(obj, key)) keys.push(key);
 
         // if(hasEnumBug) collectNonEnumProps(obj, keys);
         return keys;
@@ -192,19 +215,20 @@
     //复制自己的属性覆盖到目标对象<继承的属性除外>   跟它的作用类似Object.assign
     _.extendOwn = _.assign = createAssigner(_.keys);
 
-    _.isObject = function(obj){
+    _.isObject = function(obj) {
         var type = typeof obj;
         return type === 'function' || type === 'object' && !!obj;
     }
 
     //检测attrs 中的键值 是否包含在 object中
-    _.isMatch = function(object, attrs){
-        var keys = _.keys(attrs), length = keys.length;
-        if(object === null) return !length;
+    _.isMatch = function(object, attrs) {
+        var keys = _.keys(attrs),
+            length = keys.length;
+        if (object === null) return !length;
         var obj = Object(object);
-        for(var i = 0; i < length; i++){
+        for (var i = 0; i < length; i++) {
             var key = keys[i];
-            if(attrs[key] !== obj[key] || !(key in obj)) return false;
+            if (attrs[key] !== obj[key] || !(key in obj)) return false;
         }
         return true;
     }
@@ -230,6 +254,9 @@
     _.identity = function(value) {
         return value;
     }
+
+
+    _.property = property;
 
 }.call(this))
 
