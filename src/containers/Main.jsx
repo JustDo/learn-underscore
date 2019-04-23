@@ -35,26 +35,30 @@ class Main extends Component {
         // let index = learn.indexOf([1, 2, 3], NaN);
 
         let array = [1, 4, 6, 3, 2];
-        function select(array){
 
-            for (let i = 0; i < array.length - 1; i++) {
-                for (let j = 0; j < array.length - i - 1; j++) {
-                    let a_j = array[j];
-                    let a_j1 = array[j+1];
-                    if (a_j > a_j1) {
-                        [array[j], array[j+1]] = [array[j+1], array[j]]
-                    }
+
+        function insertSort(array) {
+            let length = array.length;
+            let preIndex,  current;
+            for (let i = 1; i < length; i++) {
+                preIndex = i - 1;
+                current = array[i];
+                while (preIndex >= 0 && array[preIndex] > current) {
+                    array[preIndex + 1] = array[preIndex];
+                    preIndex--;
+
                 }
+                array[preIndex + 1] = current;
             }
             return array;
         }
-        console.log(select(array),'我的结果')
+        console.log(insertSort(array), '我的结果')
         // console.log(index, '我的索引');
     }
     render() {
         return ( < h1 > 学习 underscore < /h1>)
+        }
+
     }
 
-}
-
-export default Main;
+    export default Main;
