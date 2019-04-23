@@ -114,6 +114,21 @@
     };
 
     // -------------------------------------集合
+    _.each = _.forEach = function(obj, iteratee, context) {
+        iteratee = optimizeCb(iteratee, context);
+        var i, length;
+        if (isArrayLike(obj)) {
+            for (i = 0, length = obj.length; i < length; i++) {
+                iteratee(obj[i], i, obj);
+            }
+        } else {
+            var keys = _.keys(obj);
+            for (i = 0, length = keys.length; i < length; i++) {
+                iteratee(obj[keys[i]], keys[i], obj);
+            }
+        }
+        return obj;
+    };
 
 
 
@@ -191,6 +206,37 @@
         }
         return low;
     }
+
+    //生成 创建indexOf, indexLastOf 的函数
+    function createIndexFinder(dir, predicateFind, sortedIndex) {
+        return function(array, item, idx) {
+            var i = 0,
+                length = getLength(array);
+            if (typeof idx == 'number') {
+                if (dir > 0) {
+                    i = idx >= 0 ? idx : Math.max(idx + length, i);
+                } else {
+                    length = idx >= 0 ? Math.min(idx + 1, length) : idx + length + 1;
+                }
+            } else if (sortedIndex && idx && length) {
+                idx = sortedIndex(array, item);
+                return array[idx] === item ? idx : -1;
+            }
+            if (item !== item) {
+                idx = predicateFind(slice.call(array, i, length), _.isNaN);
+                return idx >= 0 ? idx + i : -1;
+            }
+            for (idx = dir > 0 ? i : length - 1; idx >= 0 && idx < length; idx += dir) {
+                if (array[idx] === item) return idx;
+            }
+            return -1;
+        }
+    }
+
+    //_.indexOf(array, value, [isSorted]) 返回value 在array 中首次出现的索引值
+    //如果value 不存在 则return -1;
+    //如果array , 是个比较大的数组 或数组已经排序, isSorted = true 将进行二分查找
+    _.indexOf = createIndexFinder(1, _.findIndex, _.sortedIndex);
     // ------------------------------------ 函数
 
     // -------------------------------------对象
@@ -220,6 +266,14 @@
         return type === 'function' || type === 'object' && !!obj;
     }
 
+
+
+    _.each(['Function', 'String', 'Number'], function(name) {
+        _['is' + name] = function(obj) {
+            return toString.call(obj) === '[object ' + name + ']';
+        }
+    })
+
     //检测attrs 中的键值 是否包含在 object中
     _.isMatch = function(object, attrs) {
         var keys = _.keys(attrs),
@@ -247,6 +301,12 @@
         return function(obj) {
             return _.isMatch(obj, attrs);
         }
+    }
+
+
+
+    _.isNaN = function(obj) {
+        return _.isNumber(obj) && obj !== +obj;
     }
 
     // -------------------------------------Utility
