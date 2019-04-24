@@ -85,15 +85,19 @@
     //内部函数
     //分配函数, 返回一个函数，这个函数将参数arguments 中的键值赋给新的obj
     var createAssigner = function(keysFunc, undefinedOnly) {
+        //参数的形式 ({}, source1,source2 ....)
+        //将第二到最后一个source 键值对都添加到 {} 中, 即使 第一个参数不是 {}, 就添加到 source1
         return function(obj) {
             var length = arguments.length;
-            if (length < 2 || obj == null) return obj;
-            for (var index = 1; index < length; index++) {
-                var source = arguments[index],
+            if (length < 2 || obj == null) return obj;//参数小于2个，则无需继承属性
+            //第一层for: 遍历 [source1,source2,source3]
+            //第二层for: 遍历 source1/2/3 中的键值, 如果obj[key]==undefined,则添加进去
+            for (let index = 1; index < length; index++) {
+                let source = arguments[index],
                     keys = keysFunc(source),
                     l = keys.length;
-                for (var i = 0; i < l; i++) {
-                    var key = keys[i];
+                for (let i = 0; i < l; i++) {
+                    let key = keys[i];
                     if (!undefinedOnly || obj[key] === void 0) obj[key] = source[key];
                 }
             }

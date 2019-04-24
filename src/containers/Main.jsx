@@ -18,42 +18,30 @@ class Main extends Component {
     componentDidMount() {
 
         // sortedIndex
-        // var sortedIndexArray = [{
-        //     name: 'moe',
-        //     age: 40
-        // }, {
-        //     name: 'curly',
-        //     age: 60
-        // }];
-        // var result = learn.sortedIndex(sortedIndexArray, {
-        //     name: 'larry',
-        //     age: 50
-        // }, 'age');// "age" 即为iteratee， 排序依据 40 < 50 < 60
-
+    /**    var sortedIndexArray = [{
+            name: 'moe',
+            age: 40
+        }, {
+            name: 'curly',
+            age: 60
+        }];
+        var result = learn.sortedIndex(sortedIndexArray, {
+            name: 'larry',
+            age: 50
+        }, 'age');// "age" 即为iteratee， 排序依据 40 < 50 < 60
+**/
 
         //indexOf
         // let index = learn.indexOf([1, 2, 3], NaN);
 
-        let array = [1, 4, 6, 3, 2];
 
 
-        function insertSort(array) {
-            let length = array.length;
-            let preIndex,  current;
-            for (let i = 1; i < length; i++) {
-                preIndex = i - 1;
-                current = array[i];
-                while (preIndex >= 0 && array[preIndex] > current) {
-                    array[preIndex + 1] = array[preIndex];
-                    preIndex--;
+            let source = {name:'zhangpeng',age:28,sex:'man'}
+            let source2 = {address:'开封'}
+            let source3 = {birthday:'1991-03-08'}
+            let target = learn.extendOwn({},source,source2,source3);
 
-                }
-                array[preIndex + 1] = current;
-            }
-            return array;
-        }
-        console.log(insertSort(array), '我的结果')
-        // console.log(index, '我的索引');
+        console.log(target, '我的索引');
     }
     render() {
         return ( < h1 > 学习 underscore < /h1>)

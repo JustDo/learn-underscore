@@ -2,14 +2,14 @@
 # Author:        张鹏
 # Create Date:   2019-04-23 15:32:36
 # Last modified: 2019-04-23 15:32:49
-# Description:
+# Description:  https://github.com/hustcc/JS-Sorting-Algorithm
 **/
 
 
 
 //选择排序
 let array = [1, 4, 6, 3, 2];
-//思想:  在数组中找到最大元素, 放在末尾;
+//思想:  在数组中找到最小元素, 放在前面;
 //实现:  逐个固定好外层循环 array[i], 用内层循环array[j]逐个与外层对比, array[i] > array[j] 则交换位置,  在这个过程当中，只要相对较大的都会往后交换, 两个已与其它数字交换过的大数 相遇同样会交换, 例如: 4,6
 //也就是说，并不是一开始就把最大的直接放后最后去了, 而是一个逐渐的过程
 
