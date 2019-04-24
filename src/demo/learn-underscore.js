@@ -89,7 +89,7 @@
         //将第二到最后一个source 键值对都添加到 {} 中, 即使 第一个参数不是 {}, 就添加到 source1
         return function(obj) {
             var length = arguments.length;
-            if (length < 2 || obj == null) return obj;//参数小于2个，则无需继承属性
+            if (length < 2 || obj == null) return obj; //参数小于2个，则无需继承属性
             //第一层for: 遍历 [source1,source2,source3]
             //第二层for: 遍历 source1/2/3 中的键值, 如果obj[key]==undefined,则添加进去
             for (let index = 1; index < length; index++) {
@@ -241,9 +241,38 @@
     //如果value 不存在 则return -1;
     //如果array , 是个比较大的数组 或数组已经排序, isSorted = true 将进行二分查找
     _.indexOf = createIndexFinder(1, _.findIndex, _.sortedIndex);
+    _.lastIndexOf = createIndexFinder(-1, _.findLastIndex);
     // ------------------------------------ 函数
 
     // -------------------------------------对象
+
+
+
+    // IE < 9 不能用 for key in obj 枚举对象的某些属性
+    // hasEnumBug = false 的话, 证明toString不可枚举, 我推测在IE9以下 toString是不可枚举的
+    let hasEnumBug = !{
+        toString: null
+    }.propertyIsEnumerable('toString');
+    let nonEnumerableProps = ['valueOf', 'isPrototypeOf', 'toString',
+        'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'
+    ];
+
+    function collectNonEnumProps(obj, keys) {
+        let nonEnumIdx = nonEnumerableProps.length;
+        let constructor = obj.constructor;
+        let proto = (_.isFunction(constructor) && constructor.prototype) || ObjProto;
+
+        // Constructor 要特别处理下
+        let prop = 'constructor';
+        if (_.has(obj, prop) && !_.contains(keys, prop)) keys.push(prop);
+
+        while (nonEnumIdx--) {
+            prop = nonEnumerableProps[nonEnumIdx];
+            if (prop in obj && obj[prop] !== proto[prop] && !_.contains(keys, prop)) {
+                keys.push(prop);
+            }
+        }
+    }
 
     _.has = function(obj, key) {
         return obj !== null && hasOwnProperty.call(obj, key);
@@ -257,9 +286,30 @@
         var keys = [];
         for (var key in obj)
             if (_.has(obj, key)) keys.push(key);
-
-        // if(hasEnumBug) collectNonEnumProps(obj, keys);
+        // IE < 9 时 不能用 for key in obj
+        if (hasEnumBug) collectNonEnumProps(obj, keys);
         return keys;
+    }
+
+    //返回obj所有属性，以及继承的属性
+    _.allKeys = function(obj) {
+        if (!_.isObject(obj)) return [];
+        let keys = [];
+        for (let key in obj) keys.push(key);
+
+        // IE < 9 时 不能用 for key in obj
+        if (hasEnumBug) collectNonEnumProps(obj, keys);
+        return keys;
+    }
+    //返回object对象的所有属性值
+    _.values = function(obj) {
+        let keys = _.keys(obj);
+        let length = keys.length;
+        let values = Array(length);
+        for (let i = 0; i < length; i++) {
+            values[i] = obj[keys[i]];
+        }
+        return values;
     }
 
     //复制自己的属性覆盖到目标对象<继承的属性除外>   跟它的作用类似Object.assign

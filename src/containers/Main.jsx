@@ -18,7 +18,7 @@ class Main extends Component {
     componentDidMount() {
 
         // sortedIndex
-    /**    var sortedIndexArray = [{
+        /**    var sortedIndexArray = [{
             name: 'moe',
             age: 40
         }, {
@@ -35,13 +35,15 @@ class Main extends Component {
         // let index = learn.indexOf([1, 2, 3], NaN);
 
 
-
-            let source = {name:'zhangpeng',age:28,sex:'man'}
-            let source2 = {address:'开封'}
-            let source3 = {birthday:'1991-03-08'}
-            let target = learn.extendOwn({},source,source2,source3);
-
-        console.log(target, '我的索引');
+        /**
+                    let source = {name:'zhangpeng',age:28,sex:'man'}
+                    let source2 = {address:'开封'}
+                    let source3 = {birthday:'1991-03-08'}
+                    let target = learn.extendOwn({},source,source2,source3);
+        **/
+    let obj = {name:'zp',age:'17',sex:'man'};
+    Object.prototype.address = 'zie'
+        console.log(learn.keys(obj), '我的索引');
     }
     render() {
         return ( < h1 > 学习 underscore < /h1>)
