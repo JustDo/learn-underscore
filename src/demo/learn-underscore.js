@@ -163,6 +163,7 @@
         return slice.call(array, n == null || guard ? 1 : n);
     }
 
+    //将数组转换为对象
     _.object = function(list, values) {
         var result = {};
         for (var i = 0, length = getLength(list); i < length; i++) {
@@ -312,8 +313,32 @@
         return values;
     }
 
+
+    _.extend = createAssigner(_.allKeys);
+
     //复制自己的属性覆盖到目标对象<继承的属性除外>   跟它的作用类似Object.assign
     _.extendOwn = _.assign = createAssigner(_.keys);
+
+
+    var eq = function(a, b, aStack, bStack) {
+
+    }
+
+
+
+
+
+
+
+
+
+    _.isEqual = function(a, b) {
+        return eq(a, b);
+    }
+
+    _.isElement = function(obj) {
+        return !!(obj && obj.nodeType == 1);
+    };
 
     _.isObject = function(obj) {
         var type = typeof obj;
@@ -322,7 +347,7 @@
 
 
 
-    _.each(['Function', 'String', 'Number'], function(name) {
+    _.each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error'], function(name) {
         _['is' + name] = function(obj) {
             return toString.call(obj) === '[object ' + name + ']';
         }
@@ -363,6 +388,15 @@
         return _.isNumber(obj) && obj !== +obj;
     }
 
+    _.isBoolean = function(obj) {
+        return obj === true || obj === false || toString.call(obj) === '[object Boolean]';
+    }
+    _.isNull = function(obj) {
+        return obj === null;
+    }
+    _.isUndefined = function(obj) {
+        return obj === void 0;
+    }
     // -------------------------------------Utility
     //默认迭代器
     _.identity = function(value) {
