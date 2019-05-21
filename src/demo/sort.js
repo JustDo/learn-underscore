@@ -78,13 +78,48 @@ function insertSort(array) {
         current = array[i];
         while (preIndex >= 0 && array[preIndex] > current) {
             array[preIndex + 1] = array[preIndex];
-            preIndex--;// 作用是让 preIndex 少1 , 便于后面 array[preIndex+1] 赋值
+            preIndex--; // 作用是让 preIndex 少1 , 便于后面 array[preIndex+1] 赋值
         }
         array[preIndex + 1] = current;
     }
     return array;
 }
 
+
+//归并排序：  采用 分治策略
+//1，将数组里的元素分解成最小单元，
+//2. 然后调用 merge 解决小单元中的排序问题,
+//3. 合并小单元
+function mergeSort(arr) {
+    let length = arr.length;
+    if (length < 2) return arr;
+
+    let middle = Math.floor(length / 2),
+        left = arr.slice(0, middle),
+        right = arr.slice(middle);
+    return merge(mergeSort(left), mergeSort(right));
+}
+
+function merge(left, right) {
+    let result = [];
+
+    while (left.length && right.length) {
+        if (left[0] <= right[0]) {
+            result.push(left.shift());
+        } else {
+            result.push(right.shift());
+        }
+    }
+
+    while (left.length) {
+        result.push(left.shift());
+    }
+    while (right.length) {
+        result.push(right.shift());
+    }
+
+    return result;
+}
 // const Utils = {};
 //
 // export default Utils;

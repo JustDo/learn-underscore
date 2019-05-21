@@ -44,7 +44,7 @@ Array.prototype.heapAdjust = function(current, length) {
         largest = right;
     }
     //如果出现了 父<子 的情况说明largest有变化,则进入
-    if (largest != current) {
+    if (largest !== current) {
         //根据变化后的索引, 对调对应的值
         this.swap(current, largest);
         //对调以后,还需再与新的左右子节点进行对比
@@ -57,7 +57,6 @@ Array.prototype.swap = function(i, j) {
     this[i] = this[j];
     this[j] = tmp;
 }
-
 
 
 module.exports = Array;

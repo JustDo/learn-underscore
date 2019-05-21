@@ -4,7 +4,7 @@
 # Last modified: 2019-04-18 18:11:06
 # Description:   今天学习 underscore
 **/
-
+//https://yoyoyohamapi.gitbooks.io/undersercore-analysis/content/ 源码解析
 (function() {
 
     // var root = this;
@@ -70,7 +70,7 @@
         }
 
     }
-
+    // callback
     var cb = function(value, context, argCount) {
         if (value == null) return _.identity;
         if (_.isFunction(value)) return optimizeCb(value, context, argCount);
@@ -163,6 +163,9 @@
         return slice.call(array, n == null || guard ? 1 : n);
     }
 
+
+
+
     //将数组转换为对象
     _.object = function(list, values) {
         var result = {};
@@ -217,7 +220,7 @@
         return function(array, item, idx) {
             var i = 0,
                 length = getLength(array);
-            if (typeof idx == 'number') {
+            if (typeof idx === 'number') {
                 if (dir > 0) {
                     i = idx >= 0 ? idx : Math.max(idx + length, i);
                 } else {
@@ -326,18 +329,20 @@
 
 
 
-
-
-
-
-
-
     _.isEqual = function(a, b) {
         return eq(a, b);
     }
 
+    _.isEmpty = function(obj){
+        if(obj == null) return true;
+        if(isArrayLike(obj)&&(_.isArray(obj)||_.isString(obj)||_.isArguments(obj)));
+        return obj.length === 0;
+        return _.keys(obj).length === 0;
+    }
+
+
     _.isElement = function(obj) {
-        return !!(obj && obj.nodeType == 1);
+        return !!(obj && obj.nodeType === 1);
     };
 
     _.isObject = function(obj) {
@@ -365,6 +370,13 @@
         }
         return true;
     }
+
+    if(!_.isArguments(arguments)){
+        _.isArguments = function(obj){
+            return _.has(obj, 'callee');
+        }
+    }
+
 
     // 适当优化 isFunction , 解决在 old v8 中的typeof bug
     if (typeof /./ !== 'function' && typeof Int8Array !== 'object') {
